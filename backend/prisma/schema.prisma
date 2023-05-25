@@ -9,3 +9,89 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Funcionario {
+  idFuncionario      Int        @id @default(autoincrement())
+  nome               String
+  carteiraDeTrabalho Int
+  dataContratacao    DateTime
+  salario            Float
+  Ingresso           Ingresso[]
+}
+
+model Filme {
+  idFilme       Int    @id @default(autoincrement())
+  NomeBR        String
+  NomeEN        String
+  anoLancamento Int
+  sinopse       String
+
+  genero   Genero   @relation(fields: [IDgenero], references: [idGenero])
+  IDgenero Int
+  Sessao   Sessao[]
+}
+
+model Genero {
+  idGenero Int     @id @default(autoincrement())
+  genero   String
+  Filme    Filme[]
+}
+
+model Sala {
+  idSala     Int     @id @default(autoincrement())
+  nomeSala   String
+  capacidade Int
+  suporta3D  Boolean
+
+  cinema   Cinema   @relation(fields: [IDcinema], references: [idCinema])
+  IDcinema Int
+  Sessao   Sessao[]
+}
+
+model Cinema {
+  idCinema       Int    @id @default(autoincrement())
+  nomeCinema     String
+  enderecoCinema String
+  contatoCinema  String
+  Sala           Sala[]
+}
+
+model Horario {
+  idHorario Int      @id @default(autoincrement())
+  horario   DateTime
+  Sessao    Sessao[]
+}
+
+model Ingresso {
+  idIngresso  Int      @id @default(autoincrement())
+  data        DateTime
+  valor       Float
+  poltrona    Int
+  sala_idSala Int
+
+  funcionario   Funcionario @relation(fields: [IDfuncionario], references: [idFuncionario])
+  IDfuncionario Int
+
+  sessao   Sessao @relation(fields: [IDsessao], references: [idSessao])
+  IDsessao Int
+}
+
+model Sessao {
+  idSessao  Int      @id @default(autoincrement())
+  inicio    DateTime
+  fim       DateTime
+  legendado String
+
+  sala   Sala @relation(fields: [IDsala], references: [idSala])
+  IDsala Int
+
+  filme   Filme @relation(fields: [IDfilme], references: [idFilme])
+  IDfilme Int
+
+  horario   Horario    @relation(fields: [IDhorario], references: [idHorario])
+  IDhorario Int
+ 
+  Ingresso  Ingresso[]
+}
+
+
